@@ -409,4 +409,64 @@ class Groups extends AbstractApi
 
         return $resolver;
     }
+
+    /**
+     * @param int $group_id
+     * @param array $parameters
+     * @return mixed
+     */
+    public function hooks($group_id, array $parameters = [])
+    {
+        $resolver = $this->createOptionsResolver();
+
+        return $this->get($this->getGroupPath($group_id, 'hooks'), $resolver->resolve($parameters));
+    }
+
+    /**
+     * @param int $group_id
+     * @param int $hook_id
+     * @return mixed
+     */
+    public function hook($group_id, $hook_id)
+    {
+        return $this->get($this->getGroupPath($group_id, 'hooks/'.$this->encodePath($hook_id)));
+    }
+
+    /**
+     * @param int $group_id
+     * @param string $url
+     * @param array $params
+     * @return mixed
+     */
+    public function addHook($group_id, $url, array $params = array())
+    {
+        if (empty($params)) {
+            $params = array('push_events' => true);
+        }
+
+        $params['url'] = $url;
+
+        return $this->post($this->getGroupPath($group_id, 'hooks'), $params);
+    }
+
+    /**
+     * @param int $group_id
+     * @param int $hook_id
+     * @param array $params
+     * @return mixed
+     */
+    public function updateHook($group_id, $hook_id, array $params)
+    {
+        return $this->put($this->getGroupPath($group_id, 'hooks/'.$this->encodePath($hook_id)), $params);
+    }
+
+    /**
+     * @param int $group_id
+     * @param int $hook_id
+     * @return mixed
+     */
+    public function removeHook($group_id, $hook_id)
+    {
+        return $this->delete($this->getGroupPath($group_id, 'hooks/'.$this->encodePath($hook_id)));
+    }
 }
